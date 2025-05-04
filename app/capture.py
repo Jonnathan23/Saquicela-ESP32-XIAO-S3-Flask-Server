@@ -1,7 +1,7 @@
 import cv2, requests, numpy as np
 from io import BytesIO
-from flask import current_app
-from config import Config as AppConfig
+
+from app.utils.utils import filterImplementation
 
 def video_capture_esp32():
     """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
@@ -10,16 +10,13 @@ def video_capture_esp32():
     streaming y procesa cada chunk añadiendo ruido aleatorio y devolviendo
     los frames en formato multipart JPEG.
     """
-    #enviroments = current_app.config
-    enviroments: AppConfig = current_app.config
-    
     # IP Address
-    _URL = enviroments.CAMERA_URL
+    _URL = 'http://192.168.2.13'
     # Default Streaming Port
-    _PORT = enviroments.CAMERA_PORT
+    _PORT = '81'
     # Default streaming route
-    _ST = enviroments.STREAMING_ST
-    SEP = enviroments.STREAMING_SEP
+    _ST = '/stream'
+    SEP = ':'
 
     stream_url = ''.join([_URL,SEP,_PORT,_ST])
     res = requests.get(stream_url, stream=True)
@@ -29,20 +26,10 @@ def video_capture_esp32():
             try:
                 img_data = BytesIO(chunk)
                 cv_img = cv2.imdecode(np.frombuffer(img_data.read(), np.uint8), 1)
-                gray = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-                N = 537
-                height, width = gray.shape
-                noise = np.full((height, width), 0, dtype=np.uint8)
-                random_positions = (np.random.randint(0, height, N), np.random.randint(0, width, N))
-                
-                noise[random_positions[0], random_positions[1]] = 255
-
-                noise_image = cv2.bitwise_or(gray, noise)
-
-                total_image = np.zeros((height, width * 2), dtype=np.uint8)
-                total_image[:, :width] = gray
-                total_image[:, width:] = noise_image
-
+                grayImage = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+               
+                total_image = filterImplementation(grayImage)
+                # Codifica el frame en JPEG
                 (flag, encodedImage) = cv2.imencode(".jpg", total_image)
                 if not flag:
                     continue
@@ -69,8 +56,12 @@ def video_capture_local():
             ret, frame = cap.read()
             if not ret:
                 break
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            _, encoded = cv2.imencode('.jpg', gray)
+            grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            
+            totalImage = filterImplementation(grayImage)
+            
+            # Codifica el frame en JPEG
+            _, encoded = cv2.imencode('.jpg', totalImage)
             yield (b'--frame\r\n'                   b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encoded) + b'\r\n')
             
     finally:
