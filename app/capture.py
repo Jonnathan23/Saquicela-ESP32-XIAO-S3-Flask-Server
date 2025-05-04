@@ -71,14 +71,14 @@ def video_capture_local():
                 break
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             _, encoded = cv2.imencode('.jpg', gray)
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' +
-                   bytearray(encoded) + b'\r\n')
+            yield (b'--frame\r\n'                   b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encoded) + b'\r\n')
+            
     finally:
         cap.release()
 
 
 def select_capture():
     """Pregunta al usuario si usar cámara local o ESP32 y devuelve el generator."""
+    print("Seleccione la fuente de video:")
     choice = input("¿Local (L) o ESP32 (E)? ").strip().lower()
     return video_capture_local() if choice=='l' else video_capture_esp32()
