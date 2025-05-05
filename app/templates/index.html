@@ -8,22 +8,25 @@
      <title>Videostreaming ESP32-CAM</title>
 </head>
 <body class = "container">
-     <header>
-          <div>
-               <h1>Parte 1-A</h1>
-               <img src="{{ url_for('static', filename='Header.webp') }}" alt="Image_header">
+     <header class="header">
+          <div class="header--tittle--container">
+              <div class="header--content--image">
+                  <img src="{{ url_for('static', filename='Header.webp') }}" alt="Image_header">
+              </div>            
           </div>
-          <nav>
-               <a href="{{ url_for('main.index') }}">Parte 1-A</a>                              
-               <a href="{{ url_for('main.part1_b') }}">Parte 1-B</a>                              
-               <a href="{{ url_for('main.operations') }}">Parte 2</a>
+          <nav class="header--nav">
+              <a class="header--nav--a active" href="{{ url_for('main.index') }}">Parte 1-A</a>
+              <a class="header--nav--a" href="{{ url_for('main.part1_b') }}">Parte 1-B</a>
+              <a class="header--nav--a" href="{{ url_for('main.operations') }}">Parte 2</a>
           </nav>
-     </header>
-     <main>
-          <img src="{{ url_for('main.video_stream') }}" alt="Video_streaming">
-     </main>
+      </header>
+     <main class="main">
+          <div class="cont--steaming">
+              <img class="streaming" src="{{ url_for('main.video_stream') }}" alt="Video_streaming">
+          </div>
+      </main>
      <footer>
           <p>Práctica Vision del computador P66</p>
-     </footer>
+     </footer>     
 </body>
 </html>

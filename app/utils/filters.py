@@ -11,16 +11,16 @@ def filterImplementation_part_a (grayImage:np.ndarray , bg_subtractor) -> np.nda
     Returns:
         numpy.ndarray: Imagen total, con filtros aplicados."""
     
-    imageScaled = cv2.resize(grayImage,  dsize=None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    # grayImage = cv2.resize(grayImage,  dsize=None, fx=1, fy=1, interpolation=cv2.INTER_AREA)
     
-    height, width = imageScaled.shape
+    height, width = grayImage.shape
     
     # Imagen ecualizada
-    equalizedHistogramImage = equalizeHistogram(imageScaled)
-    equalizedCLAHEImage = methodCLAHE(imageScaled)
+    equalizedHistogramImage = equalizeHistogram(grayImage)
+    equalizedCLAHEImage = methodCLAHE(grayImage)
     
     # Extraer el fondo
-    motionMask = subtractBackground(imageScaled,bg_subtractor)         
+    motionMask = subtractBackground(grayImage,bg_subtractor)         
     motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,bg_subtractor)    
     motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,bg_subtractor)     
 
@@ -29,7 +29,7 @@ def filterImplementation_part_a (grayImage:np.ndarray , bg_subtractor) -> np.nda
     totalImage = np.zeros((height*2, width * 4), dtype=np.uint8)
     
     #Imagen original
-    totalImage[:height, :width] = imageScaled
+    totalImage[:height, :width] = grayImage
     totalImage[:height, width:width*2] = motionMask
     
     #Imagen ecualizada por histograma
