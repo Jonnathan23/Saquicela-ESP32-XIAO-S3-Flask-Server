@@ -7,12 +7,20 @@ main_bp = Blueprint("main",__name__)
 def index():
     return render_template('index.html')
 
+
+
 @main_bp.route('/operations',)
 def operations():
     return render_template('operations.html')
 
 
+
 @main_bp.route('/video_stream')
 def video_stream():
+    return Response(select_capture(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    
+@main_bp.route('/video_stream_b')
+def parte1_b():
     return Response(select_capture(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')

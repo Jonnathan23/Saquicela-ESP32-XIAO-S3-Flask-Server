@@ -2,7 +2,7 @@ import cv2, requests, numpy as np
 from io import BytesIO
 import time
 
-from app.utils.filters import filterImplementation_part_a
+from app.utils.filters import filterImplementation
 
 def video_capture_esp32():
     """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
@@ -50,7 +50,7 @@ def video_capture_esp32():
                             cv2.LINE_AA)
     
                
-                total_image = filterImplementation_part_a(grayImage, bg_subtractor)
+                total_image = filterImplementation(grayImage, bg_subtractor)
                 # Codifica el frame en JPEG
                 (flag, encodedImage) = cv2.imencode(".jpg", total_image)
                 if not flag:
@@ -101,7 +101,7 @@ def video_capture_local():
                         cv2.LINE_AA)
             
             # Aplicar filtros
-            totalImage = filterImplementation_part_a(grayImage, bg_subtractor)
+            totalImage = filterImplementation(grayImage, bg_subtractor)
             
             # Codifica el frame en JPEG
             _, encoded = cv2.imencode('.jpg', totalImage)
