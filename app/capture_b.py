@@ -2,9 +2,9 @@ import cv2, requests, numpy as np
 from io import BytesIO
 import time
 
-from app.utils.filters import filterImplementation
+from app.utils.filters import filterImplementation_part_b
 
-def video_capture_esp32():
+def video_capture_esp32_part_b():
     """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
 
     Lee la configuración de `current_app.config` para construir la URL de
@@ -20,11 +20,6 @@ def video_capture_esp32():
     SEP = ':'
     
     prev_time = time.perf_counter()
-    bg_subtractor = cv2.createBackgroundSubtractorMOG2(
-            history=1000,       # Cuántos frames recordar para construir el fondo
-            varThreshold=25,    # Sensibilidad al cambio de píxel
-            detectShadows=True  # Si quieres marcar sombras en gris oscuro
-    )
     stream_url = ''.join([_URL,SEP,_PORT,_ST])
     res = requests.get(stream_url, stream=True)
     for chunk in res.iter_content(chunk_size=100000):
@@ -32,15 +27,15 @@ def video_capture_esp32():
         if len(chunk) > 100:
             try:
                 img_data = BytesIO(chunk)
-                cv_img = cv2.imdecode(np.frombuffer(img_data.read(), np.uint8), 1)
-                grayImage = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
+                cv_img = cv2.imdecode(np.frombuffer(img_data.read(), np.uint8), 1)                
+                image = cv2.cvtColor(cv_img, cv2.COLOR_BAYER_BG2RGB)
                 
                 # Calcular FPS
                 now = time.time()    
                 fps = 1.0 / (now - prev_time) if now != prev_time else 0.0
                 prev_time = now
 
-                cv2.putText(grayImage,
+                cv2.putText(image,
                             f"FPS: {fps:.1f}",
                             (10, 30),
                             cv2.FONT_HERSHEY_SIMPLEX,
@@ -50,7 +45,7 @@ def video_capture_esp32():
                             cv2.LINE_AA)
     
                
-                total_image = filterImplementation(grayImage, bg_subtractor)
+                total_image = filterImplementation_part_b(cv_img)
                 # Codifica el frame en JPEG
                 (flag, encodedImage) = cv2.imencode(".jpg", total_image)
                 if not flag:
@@ -64,34 +59,28 @@ def video_capture_esp32():
                 continue
     
 
-def video_capture_local():
+def video_capture_local_part_b():
     """Genera un stream MJPEG en escala de grises desde la cámara local.
 
-    Abre `cv2.VideoCapture(0)`, lee fotogramas, los convierte a gris
-    y los emite codificados en JPEG para streaming HTTP.
+    Abre `cv2.VideoCapture(0)`, lee fotogramas y los emite codificados en JPEG para streaming HTTP.
     """
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         raise RuntimeError("No se pudo abrir la cámara local")
     try:        
         prev_time = time.perf_counter()
-        bg_subtractor = cv2.createBackgroundSubtractorMOG2(
-            history=1000,       # Cuántos frames recordar para construir el fondo
-            varThreshold=25,    # Sensibilidad al cambio de píxel
-            detectShadows=True  # Si quieres marcar sombras en gris oscuro
-        )
         while True:
             ret, frame = cap.read()
             if not ret:
                 break
-            grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            image = cv2.cvtColor(frame, cv2.COLOR_BAYER_BG2RGB)
             
             # Calcular FPS
             now = time.time()    
             fps = 1.0 / (now - prev_time) if now != prev_time else 0.0
             prev_time = now
 
-            cv2.putText(grayImage,
+            cv2.putText(image,
                         f"FPS: {fps:.1f}",
                         (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX,
@@ -101,7 +90,7 @@ def video_capture_local():
                         cv2.LINE_AA)
             
             # Aplicar filtros
-            totalImage = filterImplementation(grayImage, bg_subtractor)
+            totalImage = filterImplementation_part_b(image)
             
             # Codifica el frame en JPEG
             _, encoded = cv2.imencode('.jpg', totalImage)
@@ -111,8 +100,8 @@ def video_capture_local():
         cap.release()
 
 
-def select_capture():
+def select_capture_part_b():
     """Pregunta al usuario si usar cámara local o ESP32 y devuelve el generator."""
     print("Seleccione la fuente de video:")
     choice = input("¿Local (L) o ESP32 (E)? ").strip().lower()
-    return video_capture_local() if choice=='l' else video_capture_esp32()
+    return video_capture_local_part_b() if choice=='l' else video_capture_esp32_part_b()
