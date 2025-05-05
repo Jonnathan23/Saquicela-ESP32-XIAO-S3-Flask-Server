@@ -11,34 +11,39 @@ def filterImplementation_part_a (grayImage:np.ndarray , bg_subtractor) -> np.nda
     Returns:
         numpy.ndarray: Imagen total, con filtros aplicados."""
     
-    image_scaled = cv2.resize(grayImage,  dsize=None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    imageScaled = cv2.resize(grayImage,  dsize=None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
     
-    height, width = image_scaled.shape
+    height, width = imageScaled.shape
     
     # Imagen ecualizada
-    equalized_image = equalizeHistogram(image_scaled)
+    equalizedHistogramImage = equalizeHistogram(imageScaled)
+    equalizedCLAHEImage = methodCLAHE(imageScaled)
     
     # Extraer el fondo
-    motion_mask = subtractBackground(image_scaled,bg_subtractor)         
-    motion_mask_equalized = subtractBackground(equalized_image,bg_subtractor)         
+    motionMask = subtractBackground(imageScaled,bg_subtractor)         
+    motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,bg_subtractor)    
+    motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,bg_subtractor)     
 
     #* Crear imagen total -> gris + ruido
-    totalImage = np.full((height, width), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height, width * 4), dtype=np.uint8)
-#    totalImage[:, :width] = image_scaled
-#    totalImage[:, width:width*2] = equalized_image
-#    totalImage[:, width*2:width*3] = motion_mask_equalized
-#    totalImage[:, width*3:width*4] = motion_mask
+    totalImage = np.full((height*2, width*4), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height*2, width * 4), dtype=np.uint8)
     
-    totalImage[:, :width] = image_scaled
-    totalImage[:, width:width*2] = motion_mask
-    totalImage[:, width*2:width*3] = equalized_image
-    totalImage[:, width*3:width*4] = motion_mask_equalized
+    #Imagen original
+    totalImage[:height, :width] = imageScaled
+    totalImage[:height, width:width*2] = motionMask
+    
+    #Imagen ecualizada por histograma
+    totalImage[:height, width*2:width*3] = equalizedHistogramImage
+    totalImage[:height, width*3:width*4] = motionMaskEqualizedHistogram
+    
+    #Imagen ecualizada por CLAHE
+    totalImage[height:height*2, :width] = equalizedCLAHEImage
+    totalImage[height:height*2, width:width*2] = motionMaskEqualizedCLAHE
     
     return totalImage
 
 
-def filterImplementation_part_b (frame:np.ndarray) -> np.ndarray:
+def filterImplementationPartB (frame:np.ndarray) -> np.ndarray:
     """Funcion para aplicar los filtros morfológicos.
     Args:
         frame (numpy.ndarray): Imagen en escala de grises.        
@@ -71,6 +76,13 @@ def equalizeHistogram (grayImage) -> np.ndarray:
     """Funcion para equalizar el histograma."""
     equalized_image = cv2.equalizeHist(grayImage)
     return equalized_image
+
+def methodCLAHE (grayImage) -> np.ndarray:
+    """Funcion para equalizar el histograma."""
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    equalized_image = clahe.apply(grayImage)
+    return equalized_image
+
 
 
 # |----------| | Ruido| |----------|
