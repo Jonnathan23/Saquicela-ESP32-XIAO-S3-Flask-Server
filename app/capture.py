@@ -1,11 +1,10 @@
-import cv2, requests, numpy as np
-from io import BytesIO
+import cv2
 import time
 
 from app.utils.filters import filterImplementation_part_a
-from app.data.backgroundSubtractor import background_subtractor_original
-from app.data.backgroundSubtractor import background_subtractor_histogram
-from app.data.backgroundSubtractor import background_subtractor_clahe
+from app.data.data import background_subtractor_original
+from app.data.data import background_subtractor_histogram
+from app.data.data import background_subtractor_clahe
 
 
 def video_capture_esp32():
