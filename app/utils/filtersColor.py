@@ -45,7 +45,7 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     totalImage[:height, :width, :] = frame
     totalImage[:height, width:width*2, :] = frame
     
-    # Speckle
+    # Media
     totalImage[height:height*2, :width, :] = frame
     totalImage[height:height*2, width:width*2, :] = frame
     
@@ -54,6 +54,32 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
 
 
 #* |----------| | Filtros | |----------|
+def filterMedia (frame,width, height) ->np.ndarray:
+    '''Funcion para implementar el filtro media en una nueva imagen'''
+    imageMedia = frame.copy()
+    newImage = cv2.blur(
+        src=imageMedia,
+        ksize=(width, height)
+    )
+    return newImage
+
+def filterGaussian (frame, width, height, deviation) -> np.ndarray:
+    imageGaussian = frame.copy()
+    smoothedImage = cv2.GaussianBlur(
+        src=imageGaussian,
+        ksize=(width,height),
+        sigmaX=deviation
+    )
+    return smoothedImage
+
+#* |----------| | Mascaras | |----------|
+def createCenterMask (frame: np.ndarray)-> np.ndarray:
+    height, width = frame.shape[:2]
+    mask = np.zeros((height, width), dtype=np.uint8)
+    
+    x1, y1 = width//4, height//4
+    x2, y2 = 3*width//4, 3*height//4
+    cv2.rectangle(mask, (x1,y1), (x2,y2), 255, cv2.FILLED)
 
 
 
