@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 import app.data.data as data
 
+#* |----------| | Imagen/Video procesado | |----------|
 def filterImplementationPartB (frame:np.ndarray) -> np.ndarray:
-    """Funcion para aplicar los filtros morfológicos.
+    """Funcion para aplicar ruido al video.
     Args:
         frame (numpy.ndarray): Imagen en escala de grises.        
-        bg_subtractor (cv2.BackgroundSubtractorMOG2): Objeto para extraer el fondo.
     Returns:
-        numpy.ndarray: Imagen total, con filtros aplicados."""
+        numpy.ndarray: Imagen total, con ruido generado."""
     
     height, width, channels = frame.shape     
     
@@ -18,9 +18,9 @@ def filterImplementationPartB (frame:np.ndarray) -> np.ndarray:
     # Aplicar ruido Speckle
     imageSpeckleNoise = generateSpeckleNoise(frame)         
 
-    #* Crear imagen total -> original + ruido + solucion
-    totalImage = np.full((height*2, width*3, channels), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height*2, width * 3, channels), dtype=np.uint8)    
+    #* Crear imagen total -> original + ruido
+    totalImage = np.full((height*2, width*2, channels), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height*2, width * 2, channels), dtype=np.uint8)    
     
     # Gausiano
     totalImage[:height, :width, :] = frame
@@ -32,6 +32,32 @@ def filterImplementationPartB (frame:np.ndarray) -> np.ndarray:
 
     return totalImage
 
+def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
+    """    Funcion para implementar filtros mediana, blur, Gaussiano, con mascara    """
+    
+    height, width, channels = frame.shape        
+
+    #* Crear imagen total -> original + filtros
+    totalImage = np.full((height*2, width*3, channels), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height*2, width * 3, channels), dtype=np.uint8)    
+    
+    # Gausiano
+    totalImage[:height, :width, :] = frame
+    totalImage[:height, width:width*2, :] = frame
+    
+    # Speckle
+    totalImage[height:height*2, :width, :] = frame
+    totalImage[height:height*2, width:width*2, :] = frame
+    
+    return totalImage
+
+
+
+#* |----------| | Filtros | |----------|
+
+
+
+#* |----------| | Ruido | |----------|
 def generateGaussianNoise(frame:np.ndarray) -> np.ndarray:
     """Funcion para crear el ruido gaussiano.
     """
@@ -60,6 +86,8 @@ def generateGaussianNoise(frame:np.ndarray) -> np.ndarray:
     imageWithNoise = noisy.astype(np.uint8)
     
     return imageWithNoise
+
+
 
 def generateSpeckleNoise (frame: np.ndarray) -> np.ndarray:
     """Funcion para crear el ruido de Speckle.

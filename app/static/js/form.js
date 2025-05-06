@@ -1,5 +1,8 @@
 const urlStreamingGaussian = "/video_stream_b";
-const urlFilterMask = "/video_filters_mask";
+const urlFilterMaskLocal = "/photo_local_filters_mask";
+const urlFilterMaskEsp = "/photo_esp_filters_mask";
+
+//* Asignacion del DOM
 
 // Formulario
 const formNoise = document.getElementById('formNoise');
@@ -7,13 +10,16 @@ const media = document.getElementById('media');
 const deviation = document.getElementById('deviation');
 const variance = document.getElementById('variance');
 
-// Streaming
-const imageStreamingGaussian = document.getElementById('streaming_image');
-const imageStreamingMask = document.getElementById('streamingMask');
-
 // Botones
 const btStreamingGaussian = document.getElementById('btStreamingGaussian');
-const btStreamingMask = document.getElementById('btStreamingMask');
+const btPhotoMaskEsp = document.getElementById('btPhotoMaskEsp');
+const btPhotoMaskLocal = document.getElementById('btPhotoMaskLocal');
+
+// Streaming/ Foto
+const imageStreamingGaussian = document.getElementById('streaming_image');
+const imagePhotogMask = document.getElementById('PhotoMask');
+
+
 
 //* Eventos
 
@@ -40,12 +46,23 @@ formNoise.addEventListener('submit', async (e) => {
 })
 
 // Botones
-btStreamingGaussian.addEventListener('click', () => {        
-    imageStreamingMask.src = "#";    
-    imageStreamingGaussian.src = urlStreamingGaussian;
+
+const uniqueUrl = (url) => url + '?_=' + Date.now();
+
+btStreamingGaussian.addEventListener('click', () => {
+    imagePhotogMask.src = "#"
+
+    imageStreamingGaussian.src = uniqueUrl(urlStreamingGaussian);
 })
 
-btStreamingMask.addEventListener('click', () => {
+btPhotoMaskEsp.addEventListener('click', () => {
+    alert('Tomando foto')
     imageStreamingGaussian.src = "#";
-    imageStreamingMask.src = urlFilterMask;
+    imagePhotogMask.src = uniqueUrl(urlFilterMaskEsp);
+})
+
+btPhotoMaskLocal.addEventListener('click', () => {
+    alert('Tomando foto')
+    imageStreamingGaussian.src = "#";
+    imagePhotogMask.src = uniqueUrl(urlFilterMaskLocal);
 })
