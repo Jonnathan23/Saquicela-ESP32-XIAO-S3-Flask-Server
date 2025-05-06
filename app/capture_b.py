@@ -1,6 +1,6 @@
 import cv2
 
-from app.utils.filters import filterImplementationPartB
+from app.utils.filtersColor import filterImplementationPartB
 
 def video_capture_esp32_part_b():
     """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
