@@ -2,7 +2,7 @@ import cv2
 
 from app.utils.filtersColor import filterImplementationPartB
 
-def video_capture_esp32_part_b():
+def video_capture_esp32_filters_mask():
     """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
 
     Lee la configuración de `current_app.config` para construir la URL de
@@ -42,7 +42,7 @@ def video_capture_esp32_part_b():
     
     
 
-def video_capture_local_part_b():
+def video_capture_local_filters_mask():
     """Genera un stream MJPEG en escala de grises desde la cámara local.
 
     Abre `cv2.VideoCapture(0)`, lee fotogramas y los emite codificados en JPEG para streaming HTTP.
@@ -67,8 +67,8 @@ def video_capture_local_part_b():
         cap.release()
 
 
-def select_capture_part_b():
+def select_capture_filters_mask():
     """Pregunta al usuario si usar cámara local o ESP32 y devuelve el generator."""
     print("Seleccione la fuente de video:")
     choice = input("¿Local (L) o ESP32 (E)? ").strip().lower()
-    return video_capture_local_part_b() if choice=='l' else video_capture_esp32_part_b()
+    return video_capture_local_filters_mask() if choice=='l' else video_capture_esp32_filters_mask()

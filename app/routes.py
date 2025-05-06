@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, Response, request, abort
 
 from .capture_b import select_capture_part_b
 from .capture import select_capture
+from .captureFiltersMask import select_capture_filters_mask
 import app.data.data as config_data
 
 main_bp = Blueprint("main",__name__)
@@ -33,6 +34,12 @@ def video_stream_b():
     return Response(select_capture_part_b(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
+# Pictures
+@main_bp.route('/video_filters_mask')
+def picture():
+    return Response(select_capture_filters_mask(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
 # HTTP
 @main_bp.route('/save-noise',  methods=['POST'])
 def save_noise():

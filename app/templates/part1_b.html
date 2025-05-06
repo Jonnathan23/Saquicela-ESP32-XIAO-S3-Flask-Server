@@ -45,9 +45,20 @@
                 </div>
             </form>
         </section>
-        <div class="cont--steaming">
-            <img class="streaming" src="{{ url_for('main.video_stream_b') }}" alt="Video_streaming">
-        </div>
+        <section>
+            <h2> Ruido Guassiano y Speckle</h2>
+            <div class="cont--steaming">
+                <img id="streaming_image" class="streaming" src="#" alt="Video_streaming">
+            </div>
+            <button id="btStreamingGaussian">Ver video</button>
+        </section>
+        <section>
+            <h2>Filtros con máscara</h2>
+            <div>
+                <img id="streamingMask" class="streaming_image" src="#" alt="video_mascara">
+            </div>
+            <button id="btStreamingMask">Ver video</button>
+        </section>
     </main>
     <footer>
         <p>Práctica Vision del computador P66</p>
