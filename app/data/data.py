@@ -12,8 +12,8 @@ background_subtractor_clahe = cv2.createBackgroundSubtractorMOG2(
 )
 
 # Parte 1-B
-media = 0
-deviation = 0
-variance = 0
+media = 0.0
+deviation = 0.0
+variance = 0.0
 
 # Parte 2

@@ -45,15 +45,21 @@ def save_noise():
     print(f"newMedia: {newMedia}, newDeviation: {newDeviation}, newVariance: {newVariance}")
     try:    
         if(newMedia != None):
-            newMedia = float(newMedia)
+            newMedia = float(newMedia)   
+            if(newMedia < 0): abort(400, "valores no validos, solo numeros")
+            
         if(newDeviation != None):
             newDeviation= float(newDeviation)
+            if(newDeviation < 0): abort(400, "valores no validos, solo numeros")
+            
         if(newVariance != None):
-            newDeviation = float(newVariance)
+            newVariance = float(newVariance)
+            if(newVariance < 0): abort(400, "valores no validos, solo numeros")
+        
     except:
         abort(400, "valores no validos, solo numeros")
         pass
-    
+        
     config_data.media = newMedia
     config_data.deviation = newDeviation
     config_data.variance = newVariance
