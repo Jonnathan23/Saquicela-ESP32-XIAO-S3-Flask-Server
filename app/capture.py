@@ -1,5 +1,4 @@
-import cv2, requests, numpy as np
-from io import BytesIO
+import cv2
 import time
 
 from app.utils.filters import filterImplementation_part_a
