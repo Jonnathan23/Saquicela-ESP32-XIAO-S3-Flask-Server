@@ -2,6 +2,13 @@ const urlStreamingGaussian = "/video_stream_b";
 const urlFilterMaskLocal = "/photo_local_filters_mask";
 const urlFilterMaskEsp = "/photo_esp_filters_mask";
 
+const options = {
+    "0": "",
+    "1": "AND",
+    "2": "OR",
+    "3": "XOR",
+}
+
 //* Asignacion del DOM
 
 // Formulario
@@ -9,6 +16,13 @@ const formNoise = document.getElementById('formNoise');
 const media = document.getElementById('media');
 const deviation = document.getElementById('deviation');
 const variance = document.getElementById('variance');
+
+//Mascara
+const maskWidth = document.getElementById('maskWidth');
+const maskHeight = document.getElementById('maskHeight');
+
+//Select
+const maskOperation = document.getElementById('maskOperation');
 
 // Botones
 const btStreamingGaussian = document.getElementById('btStreamingGaussian');
@@ -56,13 +70,60 @@ btStreamingGaussian.addEventListener('click', () => {
 })
 
 btPhotoMaskEsp.addEventListener('click', () => {
-    alert('Tomando foto')
+    const maskWidthValue = maskWidth.value;
+    const maskHeightValue = maskHeight.value;    
+
+    fetch('/set-mask-values', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            maskWidth: maskWidthValue,
+            maskHeight: maskHeightValue,            
+        })
+    })
+        .then((data) => {
+            if (data.status === 200) {
+                imageStreamingGaussian.src = "#";
+                imagePhotogMask.src = uniqueUrl(urlFilterMaskLocal);
+                alert('se guardaron los parametros de la mascara')
+            } else {
+                alert("Datos vacios o invalidos")
+            }
+        })
+        .catch((error) => alert("Error con el servidor"))
+
     imageStreamingGaussian.src = "#";
     imagePhotogMask.src = uniqueUrl(urlFilterMaskEsp);
 })
 
+
+
 btPhotoMaskLocal.addEventListener('click', () => {
-    alert('Tomando foto')
-    imageStreamingGaussian.src = "#";
-    imagePhotogMask.src = uniqueUrl(urlFilterMaskLocal);
+    const maskWidthValue = maskWidth.value;
+    const maskHeightValue = maskHeight.value;        
+
+    fetch('/set-mask-values', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            maskWidth: maskWidthValue,
+            maskHeight: maskHeightValue,            
+        })
+    })
+        .then((data) => {
+            if (data.status === 200) {
+                imageStreamingGaussian.src = "#";
+                imagePhotogMask.src = uniqueUrl(urlFilterMaskLocal);
+                alert('se guardaron los parametros de la mascara')
+            } else {
+                alert("Datos vacios o invalidos")
+            }
+        })
+        .catch((error) => alert("Error con el servidor"))
+
+
 })

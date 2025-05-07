@@ -1,35 +1,14 @@
 import cv2
-from flask import abort
-
 from app.utils.filtersColor import implementFilterToImage
 
-def _read_and_process_frame(source):
-    """
-    Abre un VideoCapture (0 para local o URL para ESP32),
-    lee un solo frame, lo procesa y devuelve los bytes JPEG.
-    """
 
-    
-    cap = cv2.VideoCapture(source)
-    
-    if(not cap.isOpened()):        
-        abort(500, f"No se pudo abrir la fuente {source}")
-    
-    ret, frame = cap.read()
-    cap.release()
-    if not ret:
-        abort(409, f"No se pudo leer el frame de la fuente {source}")        
-    
-    processedImage = implementFilterToImage(frame)
-    
-    flag, encoded = cv2.imencode('.jpg', processedImage)    
-    if not flag:
-        abort(500, "Error al codificar la imagen a JPEG")
-        
-    return encoded.tobytes()
-        
+def get_esp32_filtered_photo():
+    """Genera un stream MJPEG con ruido desde la cámara ESP32-CAM.
 
-def get_esp32_filtered_photo() -> bytes:
+    Lee la configuración de `current_app.config` para construir la URL de
+    streaming y procesa cada chunk añadiendo ruido aleatorio y devolviendo
+    los frames en formato multipart JPEG.
+    """
     # IP Address
     _URL = 'http://192.168.2.13'
     # Default Streaming Port
@@ -39,8 +18,50 @@ def get_esp32_filtered_photo() -> bytes:
     SEP = ':'    
    
     stream_url = ''.join([_URL,SEP,_PORT,_ST])
-    return _read_and_process_frame(stream_url)
+    
+    cap = cv2.VideoCapture(stream_url)
+    
+    if(not cap.isOpened()):
+        raise RuntimeError(f"No se pudo abrir la cámara del EsP32-CAM en el URL: {stream_url}")
+    
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        total_image = implementFilterToImage(frame)
+        
+        flag, encoded = cv2.imencode('.jpg', total_image)
+        if not flag:
+            continue
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' +
+               bytearray(encoded) +
+                   b'\r\n')
+        
+    
+    
 
+def get_local_filtered_photo():
+    """Genera un stream MJPEG en escala de grises desde la cámara local.
 
-def get_local_filtered_photo() -> bytes:
-    return _read_and_process_frame(0)
+    Abre `cv2.VideoCapture(0)`, lee fotogramas y los emite codificados en JPEG para streaming HTTP.
+    """
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        raise RuntimeError("No se pudo abrir la cámara local")
+    try:                
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            # Aplicar filtros
+            totalImage = implementFilterToImage(frame)
+            
+            # Codifica el frame en JPEG
+            _, encoded = cv2.imencode('.jpg', totalImage)
+            yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encoded) + b'\r\n')
+            
+    finally:
+        cap.release()

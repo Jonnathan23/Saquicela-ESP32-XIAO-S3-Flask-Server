@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 
-from app.data.data import background_subtractor_original
-from app.data.data import background_subtractor_histogram
-from app.data.data import background_subtractor_clahe
+import app.data.data as data
+from app.bitwiseOperations import selectedOperation
 from app.bitwiseOperations import orOperation, xorOperation, andOperation
 
 #* |----------| | Imagenes totales | |----------|
@@ -27,51 +26,36 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
     equalizedCLAHEImage = methodCLAHE(grayImage)
     
     # Extraer el fondo    
-    motionMask = subtractBackground(grayImage,background_subtractor_original)         
-    motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,background_subtractor_histogram)    
-    motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,background_subtractor_clahe)     
+    motionMask = subtractBackground(grayImage,data.background_subtractor_original)         
+    motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,data.background_subtractor_histogram)    
+    motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,data.background_subtractor_clahe)     
 
-    # Resultado de bitwise_operations AND
-    totalOriginalImageAND = andOperation(grayImage, motionMask)
-    totalHistogramImageAND = andOperation(equalizedHistogramImage, motionMask)
-    totalCLAHEImageAND = andOperation(equalizedCLAHEImage, motionMask)
-    
-    # Resultado de bitwise_operations OR
-    totalOriginalImageOR = orOperation(grayImage, motionMask)
-    totalHistogramImageOR = orOperation(equalizedHistogramImage, motionMaskEqualizedHistogram)
-    totalCLAHEImageOR = orOperation(equalizedCLAHEImage, motionMaskEqualizedCLAHE)
-    
-    # Resultado de bitwise_operations XOR    
-    totalOriginalImageXOR = xorOperation(grayImage, motionMask)
-    totalHistogramImageXOR = xorOperation(equalizedHistogramImage, motionMaskEqualizedHistogram)
-    totalCLAHEImageXOR = xorOperation(equalizedCLAHEImage, motionMaskEqualizedCLAHE)
 
+    # Resultado de bitwise_operations Con la operacion seleccionada
+    
+    totalOriginalImage = selectedOperation[data.operationMask](grayImage, motionMask)
+    totalHistogramImage = selectedOperation[data.operationMask](equalizedHistogramImage, motionMask)
+    totalCLAHEImage = selectedOperation[data.operationMask](equalizedCLAHEImage, motionMask)
+    
 
     #* Crear imagen total -> gris + mascara + bitwise_operations
-    totalImage = np.full((height*3, width*5), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height*3, width *5), dtype=np.uint8)
+    totalImage = np.full((height*3, width*3), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height*3, width *3), dtype=np.uint8)
     
     #Imagen original
     totalImage[:height, :width] = grayImage
     totalImage[:height, width:width*2] = motionMask
-    totalImage[:height, width*2:width*3] = totalOriginalImageAND
-    totalImage[:height, width*3:width*4] = totalOriginalImageOR
-    totalImage[:height, width*4:width*5] = totalOriginalImageXOR
-    
-    
+    totalImage[:height, width*2:width*3] = totalOriginalImage   
+        
     #Imagen ecualizada por CLAHE
     totalImage[height:height*2, :width] = equalizedCLAHEImage
     totalImage[height:height*2, width:width*2] = motionMaskEqualizedCLAHE
-    totalImage[height:height*2, width*2:width*3] = totalHistogramImageAND
-    totalImage[height:height*2, width*3:width*4] = totalHistogramImageOR
-    totalImage[height:height*2, width*4:width*5] = totalHistogramImageXOR
+    totalImage[height:height*2, width*2:width*3] = totalHistogramImage    
     
     #Imagen ecualizada por histograma
     totalImage[height*2:height*3, :width] = equalizedHistogramImage
     totalImage[height*2:height*3, width:width*2] = motionMaskEqualizedHistogram
-    totalImage[height*2:height*3, width*2:width*3] = totalCLAHEImageAND
-    totalImage[height*2:height*3, width*3:width*4] = totalCLAHEImageOR
-    totalImage[height*2:height*3, width*4:width*5] = totalCLAHEImageXOR
+    totalImage[height*2:height*3, width*2:width*3] = totalCLAHEImage
     
     return totalImage
 

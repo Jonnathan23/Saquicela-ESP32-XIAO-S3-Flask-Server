@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, Response, request, abort, make_response
 
 from app.captures.capture_b import select_capture_part_b
-from app.captures.capture import select_capture
+from app.captures.capture import select_capture, video_capture_esp32, video_capture_local
 from app.captures.captureFiltersMask import get_esp32_filtered_photo, get_local_filtered_photo
 import app.data.data as config_data
 
@@ -22,9 +22,14 @@ def operations():
     return render_template('operations.html')
 
 # Video streaming
-@main_bp.route('/video_stream')
-def video_stream():
-    return Response(select_capture(),
+@main_bp.route('/video_stream_local')
+def video_stream_local():
+    return Response(video_capture_local(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@main_bp.route('/video_stream_esp32')
+def video_stream_esp32():    
+    return Response(video_capture_esp32(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
     
@@ -35,21 +40,35 @@ def video_stream_b():
     
 # Fotos
 @main_bp.route('/photo_local_filters_mask')
-def picture_local():
-    image_bytes = get_local_filtered_photo()
-    response = make_response(image_bytes)
-    response.headers.set('Content-Type', 'image/jpeg')
-    return response
+def picture_local():   
+    return Response(get_local_filtered_photo(), 
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @main_bp.route('/photo_esp_filters_mask')
-def picture_esp():
-    image_bytes = get_esp32_filtered_photo()
-    response = make_response(image_bytes)
-    response.headers.set('Content-Type', 'image/jpeg')
-    return response
+def picture_esp():    
+    return Response(get_esp32_filtered_photo(), 
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 # HTTP
+@main_bp.route('/set-operation', methods=['POST'])
+def setOperation():
+    data = request.get_json() 
+    print(data)
+    newOperationMask = data.get('operations')
+    print('newOperationMask')
+    print(newOperationMask)
+    try:           
+        if(newOperationMask == None):
+            abort(400, "No ha seleccionado el metodo")            
+    except:
+        abort(400, "No ha seleccionado el metodo")
+        pass        
+    
+    config_data.operationMask = newOperationMask
+    
+    return "OK",200
+
 @main_bp.route('/save-noise',  methods=['POST'])
 def save_noise():
     data = request.get_json()   
@@ -79,5 +98,29 @@ def save_noise():
     config_data.media = newMedia
     config_data.deviation = newDeviation
     config_data.variance = newVariance
+    
+    return "Se guardaron los parametros de ruido", 200
+
+@main_bp.route('/set-mask-values', methods=['POST'])
+def setMaskValues():
+    data = request.get_json()   
+    
+    newHeightMask = data.get('maskHeight')
+    newWidthMask = data.get('maskWidth')
+    
+    try:    
+        if(newHeightMask != None):
+            newHeightMask = int(newHeightMask)   
+            if(newHeightMask < 0): abort(400, "valores no validos, solo numeros")
+            
+        if(newWidthMask != None):
+            newWidthMask= int(newWidthMask)
+            if(newWidthMask < 0): abort(400, "valores no validos, solo numeros")            
+    except:
+        abort(400, "valores no validos, solo numeros")
+        pass
+        
+    config_data.heightMask = newHeightMask
+    config_data.widthMask = newWidthMask
     
     return "Se guardaron los parametros de ruido", 200

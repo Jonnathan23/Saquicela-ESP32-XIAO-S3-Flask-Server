@@ -16,4 +16,8 @@ media = 0.0
 deviation = 0.0
 variance = 0.0
 
+widthMask = 0
+heightMask = 0
+operationMask = "0"
+
 # Parte 2

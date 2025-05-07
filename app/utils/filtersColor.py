@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from app.bitwiseOperations import selectedOperation
 import app.data.data as data
 
 #* |----------| | Imagen/Video procesado | |----------|
@@ -37,17 +38,24 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     
     height, width, channels = frame.shape        
 
+    # Mascara Central
+    
+    centerMask = createCenterMask(frame)
+
+    imageWithMask = selectedOperation[data.operationMask](frame, centerMask)
+
+    # Mostrar mascara
+    centerMask = cv2.cvtColor(centerMask, cv2.COLOR_BGR2RGB)    
+
     #* Crear imagen total -> original + filtros
-    totalImage = np.full((height*2, width*3, channels), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height*2, width * 3, channels), dtype=np.uint8)    
+    totalImage = np.full((height, width*3, channels), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height, width * 3, channels), dtype=np.uint8)    
     
-    # Gausiano
+    # Mascara Central Rentangular AND
     totalImage[:height, :width, :] = frame
-    totalImage[:height, width:width*2, :] = frame
+    totalImage[:height, width:width*2, :] = centerMask
+    totalImage[:height, width*2:width*3, :] = imageWithMask
     
-    # Media
-    totalImage[height:height*2, :width, :] = frame
-    totalImage[height:height*2, width:width*2, :] = frame
     
     return totalImage
 
@@ -77,9 +85,11 @@ def createCenterMask (frame: np.ndarray)-> np.ndarray:
     height, width = frame.shape[:2]
     mask = np.zeros((height, width), dtype=np.uint8)
     
-    x1, y1 = width//4, height//4
-    x2, y2 = 3*width//4, 3*height//4
+    x1, y1 = width//8, height//8
+    x2, y2 = (width//8) + data.widthMask,( height//8) + data.heightMask
     cv2.rectangle(mask, (x1,y1), (x2,y2), 255, cv2.FILLED)
+    
+    return mask
 
 
 
