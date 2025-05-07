@@ -29,16 +29,16 @@
                 <legend>Parametros de ruido</legend>
                 <div>
                     <label for="media">Media</label>
-                    <input type="text" name="media" id="media" placeholder="Ej. 20">
+                    <input type="number" name="media" id="media" placeholder="Ej. 20">
                 </div>
 
                 <div>
                     <label for="deviation">Desviación</label>
-                    <input type="text" name="deviation" id="deviation" placeholder="Ej. 20">
+                    <input type="number" name="deviation" id="deviation" placeholder="Ej. 20">
                 </div>
                 <div>
                     <label for="variance">Varianza</label>
-                    <input type="text" name="variance" id="variance" placeholder="Ej. 20">
+                    <input type="number" name="variance" id="variance" placeholder="Ej. 20">
                 </div>
                 <div>
                     <input type="submit" value="Aplicar">
@@ -53,20 +53,44 @@
             <button id="btStreamingGaussian">Ver video</button>
         </section>
         <section>
-            <h2>Filtros con máscara</h2>
+            <h2>Filtros con máscara</h2>  
+            <div>
+                <div>
+                    <label for="maskWidth">Ancho de la Mascara</label>
+                    <input type="number" name="maskWidth" id="maskWidth"></label>
+                </div>
+                <div>
+                    <label for="maskHeight">Alto de la Mascara</label>
+                    <input type="number" name="maskHeight" id="maskHeight"></label>
+                </div>
+                <div>
+                    <label for="kernel">Tamaño del Kernel</label>
+                    <input type="number" name="kernel" id="kernel">
+                </div>
+                <div>
+                    <select name="filterOptions" id="filterOptions">
+                        <option value="0">----- Seleccione filtro -----</option>
+                        <option value="1">Mediana</option>
+                        <option value="2">blur</option>
+                        <option value="3">Guassiano</option>
+                        <option value="4">Ninguno</option>
+                    </select>
+                </div>
+                <div>
+                    <select name="bordersDetection" id="bordersDetection">
+                        <option value="0">----- Seleccione Deteccion de bordes -----</option>
+                        <option value="1">Sobel</option>
+                        <option value="2">Candy</option>
+                    </select>
+                </div>
+                <div>
+                    <button id="btPhotoMaskEsp">Ver video con esp32</button>
+                    <button id="btPhotoMaskLocal">Ver video Local</button>
+                </div>
+            </div>        
             <div>
                 <img id="PhotoMask" class="streaming" src="#" alt="video_mascara">
             </div>
-            <div>
-                <label for="maskWidth">Ancho de la Mascara</label>
-                <input type="text" name="maskWidth" id="maskWidth"></label>
-            </div>
-            <div>
-                <label for="maskHeight">Alto de la Mascara</label>
-                <input type="text" name="maskHeight" id="maskHeight"></label>
-            </div>
-            <button id="btPhotoMaskEsp">Tomar foto con esp32</button>
-            <button id="btPhotoMaskLocal">Tomar foto Local</button>
         </section>
     </main>
     <footer>
@@ -75,7 +99,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/part1_b.js') }}"></script>
 </body>
 
 </html>

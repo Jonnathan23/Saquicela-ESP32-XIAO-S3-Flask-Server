@@ -42,14 +42,14 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     
     centerMask = createCenterMask(frame)
 
-    imageWithMask = selectedOperation[data.operationMask](frame, centerMask)
+    imageWithMask = selectedOperation.get("OR")(frame, centerMask)
 
     # Mostrar mascara
     centerMask = cv2.cvtColor(centerMask, cv2.COLOR_BGR2RGB)    
 
-    #* Crear imagen total -> original + filtros
-    totalImage = np.full((height, width*3, channels), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height, width * 3, channels), dtype=np.uint8)    
+    #* Crear imagen total -> original + filtros + deteccion_bordes
+    totalImage = np.full((height, width*4, channels), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height, width * 4, channels), dtype=np.uint8)    
     
     # Mascara Central Rentangular AND
     totalImage[:height, :width, :] = frame
@@ -62,23 +62,30 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
 
 
 #* |----------| | Filtros | |----------|
-def filterMedia (frame,width, height) ->np.ndarray:
+def filterMedia (frame) ->np.ndarray:
     '''Funcion para implementar el filtro media en una nueva imagen'''
-    imageMedia = frame.copy()
     newImage = cv2.blur(
-        src=imageMedia,
-        ksize=(width, height)
+        src=frame,
+        ksize=(data.kernel,data.kernel)
     )
     return newImage
 
-def filterGaussian (frame, width, height, deviation) -> np.ndarray:
-    imageGaussian = frame.copy()
+def filterGaussian (frame, deviation=5) -> np.ndarray:
     smoothedImage = cv2.GaussianBlur(
-        src=imageGaussian,
-        ksize=(width,height),
+        src=frame,
+        ksize=(data.kernel,data.kernel),
         sigmaX=deviation
     )
     return smoothedImage
+
+def filterBlur (frame) -> np.ndarray:
+    src = frame.copy()
+    blurImage = cv2.blur(
+        src,
+        ksize=(data.kernel,data.kernel)
+    )
+    return blurImage
+    
 
 #* |----------| | Mascaras | |----------|
 def createCenterMask (frame: np.ndarray)-> np.ndarray:

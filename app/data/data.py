@@ -26,5 +26,18 @@ variance = 0.0
 
 widthMask = 0
 heightMask = 0
+border = ""
+filterSelected = ""
+kernel=0
+
+class TypeBordersOptions:
+    sobel="Sobel"
+    candy="Candy"
+
+class TypeFilters:
+    median="median"
+    blur="blur"
+    gaussian="gaussian"
+    noOne="noOne"
 
 # |----------| | Parte 2 | |----------|

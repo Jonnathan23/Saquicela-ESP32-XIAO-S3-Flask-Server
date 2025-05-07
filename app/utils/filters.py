@@ -15,30 +15,8 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
     Returns:
         numpy.ndarray: Imagen total, con filtros aplicados."""
     
-    # grayImage = cv2.resize(grayImage,  dsize=None, fx=1, fy=1, interpolation=cv2.INTER_AREA)
-    
     height, width = grayImage.shape
     
-    #smoothedImgage = cv2.GaussianBlur(grayImage, (11, 11), 0)
-    
-    '''TODO:
-    # Imagen ecualizada
-    equalizedHistogramImage = equalizeHistogram(grayImage)
-    equalizedCLAHEImage = methodCLAHE(grayImage)
-    
-    # Extraer el fondo    
-    motionMask = subtractBackground(grayImage,data.background_subtractor_original)         
-    motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,data.background_subtractor_histogram)    
-    motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,data.background_subtractor_clahe)     
-
-
-    # Resultado de bitwise_operations Con la operacion seleccionada
-
-    totalOriginalImage = selectedOperation[data.operationMask](grayImage, motionMask)
-    totalHistogramImage = selectedOperation[data.operationMask](equalizedHistogramImage, motionMask)
-    totalCLAHEImage = selectedOperation[data.operationMask](equalizedCLAHEImage, motionMask)
-    
-    #todo: --------------'''
     normalImage, mask, equalizedImage = implementEqualize(grayImage)
     
 
@@ -51,19 +29,6 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
     totalImage[:height, width:width*2] = mask
     totalImage[:height, width*2:width*3] = equalizedImage   
         
-    '''
-    #Imagen ecualizada por CLAHE
-    totalImage[height:height*2, :width] = equalizedCLAHEImage
-    totalImage[height:height*2, width:width*2] = motionMaskEqualizedCLAHE
-    totalImage[height:height*2, width*2:width*3] = totalHistogramImage    
-    
-    #Imagen ecualizada por histograma
-    totalImage[height*2:height*3, :width] = equalizedHistogramImage
-    totalImage[height*2:height*3, width:width*2] = motionMaskEqualizedHistogram
-    totalImage[height*2:height*3, width*2:width*3] = totalCLAHEImage
-    
-    '''
-    
     return totalImage
 
 #* |----------| | Filtros| |----------|

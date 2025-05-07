@@ -132,6 +132,9 @@ def setMaskValues():
     
     newHeightMask = data.get('maskHeight')
     newWidthMask = data.get('maskWidth')
+    newfilterSelected = data.get('filterSelected')   
+    newborderSelected = data.get('borderSelected')
+    newKernel = data.get('kernelValue')
     
     try:    
         if(newHeightMask != None):
@@ -141,11 +144,21 @@ def setMaskValues():
         if(newWidthMask != None):
             newWidthMask= int(newWidthMask)
             if(newWidthMask < 0): abort(400, "valores no validos, solo numeros")            
+        
+        if(newfilterSelected == None or newborderSelected == None):
+            abort(400, "valores no validos, solo numeros")
+        
+        if(newKernel % 2 == 0  ):
+            abort(404, 'El kernel no puede ser par')
+            
     except:
         abort(400, "valores no validos, solo numeros")
         pass
         
     config_data.heightMask = newHeightMask
     config_data.widthMask = newWidthMask
+    config_data.border = newborderSelected
+    config_data.filterSelected = newfilterSelected
+    config_data.kernel = newKernel
     
     return "Se guardaron los parametros de ruido", 200
