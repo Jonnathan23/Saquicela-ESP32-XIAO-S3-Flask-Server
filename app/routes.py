@@ -136,23 +136,28 @@ def setMaskValues():
     newborderSelected = data.get('borderSelected')
     newKernel = data.get('kernelValue')
     
+    print(data)
+    print(f"newHeightMask: {newHeightMask}, newWidthMask: {newWidthMask}, newfilterSelected: {newfilterSelected}, newborderSelected: {newborderSelected}, newKernel: {newKernel}")
+    
     try:    
         if(newHeightMask != None):
             newHeightMask = int(newHeightMask)   
-            if(newHeightMask < 0): abort(400, "valores no validos, solo numeros")
+            if(newHeightMask < 0): abort(401, "valores no validos, solo numeros")
             
         if(newWidthMask != None):
             newWidthMask= int(newWidthMask)
-            if(newWidthMask < 0): abort(400, "valores no validos, solo numeros")            
+            if(newWidthMask < 0): abort(402, "valores no validos, solo numeros")            
         
         if(newfilterSelected == None or newborderSelected == None):
-            abort(400, "valores no validos, solo numeros")
+            abort(404, "No ha seleccionado")
         
-        if(newKernel % 2 == 0  ):
-            abort(404, 'El kernel no puede ser par')
+        if(newKernel != None):
+            newKernel = int(newKernel)            
+            if(newKernel % 2 == 0  ):
+                abort(404, 'El kernel no puede ser par')
             
     except:
-        abort(400, "valores no validos, solo numeros")
+        abort(409, "valores no validos, solo numeros")
         pass
         
     config_data.heightMask = newHeightMask

@@ -42,7 +42,8 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     
     centerMask = createCenterMask(frame)
 
-    imageWithMask = selectedOperation.get("OR")(frame, centerMask)
+    # Aplicar filtros
+    imageWithMask = implementTypeFilter(frame, centerMask)
 
     # Mostrar mascara
     centerMask = cv2.cvtColor(centerMask, cv2.COLOR_BGR2RGB)    
@@ -59,7 +60,25 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     
     return totalImage
 
-
+def implementTypeFilter(frame, centerMask):
+    if(data.filterSelected == data.TypeFilters.median):
+        medianFiltered = filterMedia(frame)
+        medianMasked   = applyFilterInMask(frame, centerMask, medianFiltered)
+        return medianMasked
+    
+    if(data.filterSelected == data.TypeFilters.blur):
+        blurFiltered = filterBlur(frame)
+        blurMasked   = applyFilterInMask(frame, centerMask, blurFiltered)
+        return blurMasked
+    
+    if(data.filterSelected == data.TypeFilters.gaussian):
+        gaussianFiltered = filterGaussian(frame, data.deviation)
+        gaussianMasked   = applyFilterInMask(frame, centerMask, gaussianFiltered)
+        return gaussianMasked
+    
+    if(data.filterSelected == data.TypeFilters.noOne):
+        return frame
+        
 
 #* |----------| | Filtros | |----------|
 def filterMedia (frame) ->np.ndarray:
@@ -85,7 +104,23 @@ def filterBlur (frame) -> np.ndarray:
         ksize=(data.kernel,data.kernel)
     )
     return blurImage
+
+def applyFilterInMask(frame: np.ndarray, mask:np.ndarray, filteredImage:np.ndarray) -> np.ndarray:
+    maskedFiltered = cv2.bitwise_and(
+        filteredImage,           # src
+        filteredImage,           # src
+        mask=mask                # 0/255
+    )
+    # 2.2) Parte original fuera de la máscara
+    inverseMask = cv2.bitwise_not(mask)
+    maskedOriginal = cv2.bitwise_and(
+        frame,
+        frame,
+        mask=inverseMask
+    )
     
+    return cv2.add(maskedOriginal, maskedFiltered)
+ 
 
 #* |----------| | Mascaras | |----------|
 def createCenterMask (frame: np.ndarray)-> np.ndarray:
