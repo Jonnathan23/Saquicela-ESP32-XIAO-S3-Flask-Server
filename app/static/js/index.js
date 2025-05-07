@@ -1,6 +1,13 @@
 const urlStreamingLocal = '/video_stream_local'
 const urlStreamingEsp32 = 'video_stream_esp32'
 
+const equalizeOptions = {
+    "0":"",
+    "1":"Original",
+    "2":"Histograma",
+    "3":"CLAHE"
+}
+
 const options = {
     "0": "",
     "1": "AND",
@@ -19,6 +26,7 @@ const streamingImage = document.getElementById('streaming_image')
 
 // Select
 const cbOperations = document.getElementById('operations')
+const cbEqualize = document.getElementById('equalize')
 
 //* Eventos
 
@@ -29,6 +37,7 @@ const uniqueUrl = (url) => url + '?_=' + Date.now();
 
 const setUrlStreaming = async (urlHttp, urlStreaming) => {
     const operations = cbOperations.value;
+    const equalize = cbEqualize.value;
 
     fetch(urlHttp, {
         method: 'POST',
@@ -36,7 +45,8 @@ const setUrlStreaming = async (urlHttp, urlStreaming) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({            
-            operations: options[operations]
+            operations: options[operations],
+            equalizeOption: equalizeOptions[equalize]
         })
     })
     .then((data) =>{

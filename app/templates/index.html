@@ -20,18 +20,25 @@
               <a class="header--nav--a" href="{{ url_for('main.operations') }}">Parte 2</a>
           </nav>
       </header>
-     <main class="main">
-          <div class="cont--steaming">
-              <img id="streaming_image" class="streaming" src="#" alt="Video_streaming">
-          </div>
+     <main class="main">       
           <div>
+            <select name="equalize" id="equalize">
+                <option value="0" disabled selected>---- Seleccione Ecualizacion ----</option>
+                <option value="1">Original</option>
+                <option value="2" >Histograma</option>                    
+                <option value="3" >CLAHE</option>                    
+            </select>
             <select name="operations" id="operations">
-                <option value="0" disabled selected>---- Seleccione Operacion ----</option>
+                <option value="0" disabled selected>---- Seleccione la Operacion ----</option>
                 <option value="1">And</option>
                 <option value="2" >Or</option>                    
+                <option value="3" >Xor</option>                    
             </select>
             <button id="btEsp">Ver video con esp32</button>
             <button id="btLocal">Ver video Local</button>
+        </div>
+        <div class="cont--steaming">
+            <img id="streaming_image" class="streaming" src="#" alt="Video_streaming">
         </div>
       </main>
      <footer>

@@ -21,6 +21,7 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
     
     #smoothedImgage = cv2.GaussianBlur(grayImage, (11, 11), 0)
     
+    '''TODO:
     # Imagen ecualizada
     equalizedHistogramImage = equalizeHistogram(grayImage)
     equalizedCLAHEImage = methodCLAHE(grayImage)
@@ -32,21 +33,25 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
 
 
     # Resultado de bitwise_operations Con la operacion seleccionada
-    
+
     totalOriginalImage = selectedOperation[data.operationMask](grayImage, motionMask)
     totalHistogramImage = selectedOperation[data.operationMask](equalizedHistogramImage, motionMask)
     totalCLAHEImage = selectedOperation[data.operationMask](equalizedCLAHEImage, motionMask)
     
+    #todo: --------------'''
+    normalImage, mask, equalizedImage = implementEqualize(grayImage)
+    
 
     #* Crear imagen total -> gris + mascara + bitwise_operations
-    totalImage = np.full((height*3, width*3), 0, dtype=np.uint8)    
-    totalImage = np.zeros((height*3, width *3), dtype=np.uint8)
+    totalImage = np.full((height, width*3), 0, dtype=np.uint8)    
+    totalImage = np.zeros((height, width *3), dtype=np.uint8)
     
     #Imagen original
-    totalImage[:height, :width] = grayImage
-    totalImage[:height, width:width*2] = motionMask
-    totalImage[:height, width*2:width*3] = totalOriginalImage   
+    totalImage[:height, :width] = normalImage
+    totalImage[:height, width:width*2] = mask
+    totalImage[:height, width*2:width*3] = equalizedImage   
         
+    '''
     #Imagen ecualizada por CLAHE
     totalImage[height:height*2, :width] = equalizedCLAHEImage
     totalImage[height:height*2, width:width*2] = motionMaskEqualizedCLAHE
@@ -56,6 +61,8 @@ def filterImplementation_part_a (grayImage:np.ndarray) -> np.ndarray:
     totalImage[height*2:height*3, :width] = equalizedHistogramImage
     totalImage[height*2:height*3, width:width*2] = motionMaskEqualizedHistogram
     totalImage[height*2:height*3, width*2:width*3] = totalCLAHEImage
+    
+    '''
     
     return totalImage
 
@@ -83,6 +90,25 @@ def methodCLAHE (grayImage) -> np.ndarray:
     equalized_image = clahe.apply(median_blurred)
     return equalized_image
 
+def implementEqualize(grayImage:np.ndarray):
+    '''Implementa el tipo de filtro seleccionado'''
+    if(data.equalizeOption == data.EqualizeSelectOptions.original):
+        motionMask = subtractBackground(grayImage,data.background_subtractor_original)
+        totalOriginalImage = selectedOperation[data.operationMask](grayImage, motionMask)
+        return grayImage,motionMask,totalOriginalImage
+    
+    if(data.equalizeOption == data.EqualizeSelectOptions.histogram):
+        equalizedHistogramImage = equalizeHistogram(grayImage)
+        motionMaskEqualizedHistogram = subtractBackground(equalizedHistogramImage,data.background_subtractor_histogram)
+        totalHistogramImage = selectedOperation[data.operationMask](equalizedHistogramImage, motionMaskEqualizedHistogram)
+        return equalizedHistogramImage, motionMaskEqualizedHistogram, totalHistogramImage
+    
+    if(data.equalizeOption == data.EqualizeSelectOptions.clahe):
+        equalizedCLAHEImage = methodCLAHE(grayImage)
+        motionMaskEqualizedCLAHE = subtractBackground(equalizedCLAHEImage,data.background_subtractor_clahe)   
+        totalCLAHEImage = selectedOperation[data.operationMask](equalizedCLAHEImage, motionMaskEqualizedCLAHE)
+        return equalizedCLAHEImage, motionMaskEqualizedCLAHE, totalCLAHEImage
+        
 
 # |----------| | Ruido| |----------|
 

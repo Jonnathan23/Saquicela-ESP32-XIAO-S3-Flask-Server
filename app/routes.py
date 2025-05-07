@@ -51,21 +51,46 @@ def picture_esp():
 
 
 # HTTP
-@main_bp.route('/set-operation', methods=['POST'])
-def setOperation():
+@main_bp.route('/set-equalize-option', methods=['POST'])
+def setEqualizeOption():
     data = request.get_json() 
     print(data)
-    newOperationMask = data.get('operations')
-    print('newOperationMask')
-    print(newOperationMask)
+    newequalizeOption = data.get('equalizeOption')
+    print('newequalizeOption')
+    print(newequalizeOption)
     try:           
-        if(newOperationMask == None):
+        if(newequalizeOption == None):
             abort(400, "No ha seleccionado el metodo")            
     except:
         abort(400, "No ha seleccionado el metodo")
         pass        
     
+    config_data.operationMask = newequalizeOption
+    
+    return "OK",200
+    
+
+
+@main_bp.route('/set-operation', methods=['POST'])
+def setOperation():
+    data = request.get_json() 
+    
+    newOperationMask = data.get('operations')
+    newEqualizeOption = data.get('equalizeOption')
+    
+    try:           
+        if(newOperationMask == None):
+            abort(400, "No ha seleccionado el metodo")
+            
+        if(newEqualizeOption == None):
+            abort(400, "No ha seleccionado el metodo")                        
+    except:
+        abort(400, "No ha seleccionado el metodo")
+        pass        
+    
     config_data.operationMask = newOperationMask
+    config_data.equalizeOption = newEqualizeOption
+    
     
     return "OK",200
 
