@@ -20,7 +20,7 @@ const filterOptions = {
 const bordersDetectionOptios = {
     "0": "",
     "1": "Sobel",
-    "2": "Candy", 
+    "2": "Canny", 
 }
 
 //* Asignacion del DOM

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from app.bitwiseOperations import selectedOperation
 import app.data.data as data
+import app.detectEdges as detectEdges
 
 #* |----------| | Imagen/Video procesado | |----------|
 def filterImplementationPartB (frame:np.ndarray) -> np.ndarray:
@@ -46,7 +47,10 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     imageWithMask = implementTypeFilter(frame, centerMask)
 
     # Mostrar mascara
-    centerMask = cv2.cvtColor(centerMask, cv2.COLOR_BGR2RGB)    
+    centerMask = cv2.cvtColor(centerMask, cv2.COLOR_BGR2RGB)
+    
+    # Bordes
+    imageEdge = detectEdges.edges[data.border](imageWithMask)
 
     #* Crear imagen total -> original + filtros + deteccion_bordes
     totalImage = np.full((height, width*4, channels), 0, dtype=np.uint8)    
@@ -56,6 +60,7 @@ def implementFilterToImage (frame:np.ndarray) -> np.ndarray:
     totalImage[:height, :width, :] = frame
     totalImage[:height, width:width*2, :] = centerMask
     totalImage[:height, width*2:width*3, :] = imageWithMask
+    totalImage[:height, width*3:width*4, :] = imageEdge
     
     
     return totalImage
@@ -78,7 +83,8 @@ def implementTypeFilter(frame, centerMask):
     
     if(data.filterSelected == data.TypeFilters.noOne):
         return frame
-        
+
+    
 
 #* |----------| | Filtros | |----------|
 def filterMedia (frame) ->np.ndarray:
@@ -193,5 +199,4 @@ def generateSpeckleNoise (frame: np.ndarray) -> np.ndarray:
     noisy = imageFloat + imageFloat * speckleNoise
     noisy_clipped = np.clip(noisy, 0, 255).astype(np.uint8)
     return noisy_clipped
-    
     

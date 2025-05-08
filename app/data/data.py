@@ -32,7 +32,9 @@ kernel=0
 
 class TypeBordersOptions:
     sobel="Sobel"
-    candy="Candy"
+    canny="Canny"
+
+
 
 class TypeFilters:
     median="median"
