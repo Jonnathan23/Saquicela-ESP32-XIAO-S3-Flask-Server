@@ -14,7 +14,7 @@ def detectEdgesCanny(frame: np.ndarray, threshold1: int = 40, threshold2: int = 
         image=grayImage,
         threshold1=threshold1,
         threshold2=threshold2,
-        apertureSize=3,
+        apertureSize=kernelValue,
         L2gradient=False
     )
     
@@ -23,18 +23,21 @@ def detectEdgesCanny(frame: np.ndarray, threshold1: int = 40, threshold2: int = 
 def detectEdgesSobel(frame: np.ndarray) -> np.ndarray:
     grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame.copy()
     
+    kernelValue = 7 if data.kernel >= 7 else 5 if data.kernel else 3
+    
     # Gradientes
     gradX = cv2.Sobel(
         src=grayImage,
         ddepth=cv2.CV_64F,
         dx=1, dy=0,
-        ksize=data.kernel
+        ksize=kernelValue
     )
+    
     gradY = cv2.Sobel(
         src=grayImage,
         ddepth=cv2.CV_64F,
         dx=0, dy=1,
-        ksize=data.kernel
+        ksize=kernelValue
     )
     
     # Valores absolutos y a uint8
