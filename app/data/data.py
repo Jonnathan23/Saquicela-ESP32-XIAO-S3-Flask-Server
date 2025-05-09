@@ -43,3 +43,13 @@ class TypeFilters:
     noOne="noOne"
 
 # |----------| | Parte 2 | |----------|
+
+morfologicalKernel = 0
+morfologicalOperation = ""
+
+class TypeMorfologicalOperations:
+    erosion="erosion"    
+    dilatation="dilation"
+    topHat="topHat"
+    blackHat="blackHat"
+    originalImageTopBlackHat="originalImageTopBlackHat"

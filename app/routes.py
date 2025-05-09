@@ -4,6 +4,7 @@ from app.captures.capture_b import select_capture_part_b
 from app.captures.capture import select_capture, video_capture_esp32, video_capture_local
 from app.captures.captureFiltersMask import get_esp32_filtered_photo, get_local_filtered_photo
 import app.data.data as config_data
+from app.renderImage import renderImageAxialBoneC
 
 main_bp = Blueprint("main",__name__)
 
@@ -38,7 +39,6 @@ def video_stream_b():
     return Response(select_capture_part_b(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
-# Fotos
 @main_bp.route('/photo_local_filters_mask')
 def picture_local():   
     return Response(get_local_filtered_photo(), 
@@ -48,6 +48,19 @@ def picture_local():
 def picture_esp():    
     return Response(get_esp32_filtered_photo(), 
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Fotos
+@main_bp.route('/axial-bone-c-result')
+def axial_bone_c_plus():
+    return renderImageAxialBoneC("axial_bone_c+.png")
+
+@main_bp.route('/axial-bone-result')
+def axial_bone_c():
+    return renderImageAxialBoneC("axial_bone.png")
+
+@main_bp.route('/axial-lung-result')
+def axial_lung():
+    return renderImageAxialBoneC("axial_lung.png")
 
 
 # HTTP
@@ -167,3 +180,30 @@ def setMaskValues():
     config_data.kernel = newKernel
     
     return "Se guardaron los parametros de ruido", 200
+
+
+@main_bp.route('/set-morfological-operations', methods=['POST'])
+def setMorfologicalOperations():
+    data = request.get_json()   
+    
+    newMorfologicalOperation = data.get('operation')
+    newSizeMask = data.get('sizeMask')
+    
+    print(data)
+    print(f"newMorfologicalOperation: {newMorfologicalOperation}, newSizeMask: {newSizeMask}")
+    
+    try:           
+        if(newMorfologicalOperation == None):
+            abort(400, "No ha seleccionado el metodo")
+            
+        if(newSizeMask == None):
+            abort(400, "No ha seleccionado el metodo")                        
+    except:
+        abort(400, "No ha seleccionado el metodo")
+        pass        
+    
+    config_data.morfologicalKernel = newSizeMask
+    config_data.morfologicalOperation = newMorfologicalOperation
+    
+    
+    return "OK",200

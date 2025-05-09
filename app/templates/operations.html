@@ -1,40 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="{{ url_for('static', filename='operation.css') }}" as="style">   
-     <title>Operaciones Morfológicas</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='operation.css') }}" as="style">
+    <title>Operaciones Morfológicas</title>
 </head>
-<body class = "container">
-     <header class="header">
-          <div class="header--tittle--container">
-              <div class="header--content--image">
-                  <img src="{{ url_for('static', filename='Header.webp') }}" alt="Image_header">
-              </div>            
-          </div>
-          <nav class="header--nav">
-              <a class="header--nav--a" href="{{ url_for('main.index') }}">Parte 1-A</a>
-              <a class="header--nav--a" href="{{ url_for('main.part1_b') }}">Parte 1-B</a>
-              <a class="header--nav--a active" href="{{ url_for('main.operations') }}">Parte 2</a>
-          </nav>
-      </header>
-      <main class="main">
-          <div class="cont--steaming">
-              <div class="cont--image--streaming">
-                  <img class="streaming" src="imgs/gato.jpg" alt="Video_streaming">
-              </div>            
-              <div class="cont--image--streaming">
-                  <img class="streaming" src="imgs/gato.jpg" alt="Video_streaming">
-              </div>            
-              <div class="cont--image--streaming">
-                  <img class="streaming" src="imgs/gato.jpg" alt="Video_streaming">
-              </div>            
-          </div>
-      </main>
-     <footer>
-          <p>Práctica Vision del computador P66</p>
-     </footer>
+
+<body class="container">
+    <header class="header">
+        <div class="header--tittle--container">
+            <div class="header--content--image">
+                <img src="{{ url_for('static', filename='Header.webp') }}" alt="Image_header">
+            </div>
+        </div>
+        <nav class="header--nav">
+            <a class="header--nav--a" href="{{ url_for('main.index') }}">Parte 1-A</a>
+            <a class="header--nav--a" href="{{ url_for('main.part1_b') }}">Parte 1-B</a>
+            <a class="header--nav--a active" href="{{ url_for('main.operations') }}">Parte 2</a>
+        </nav>
+    </header>
+    <main class="main">
+        <section>
+            <h3>Operaciones Morfológicas</h3>
+            <p>Imagenes de lesiones una hernia de Lingula </p>
+        </section>
+        <div>
+            <div>
+                <div>
+                    <label for="morfologicsOperations">Operaion morfológica</label>
+                    <select name="morfologicsOperations" id="morfologicsOperations">
+                        <option value="0" selected disabled>------ Seleccione la Operacion Morfológica ------</option>
+                        <option value="1">Erosión</option>
+                        <option value="2">Dilatación</option>
+                        <option value="3">Top Hat</option>
+                        <option value="4">Black Hat</option>
+                        <option value="5"> Imagen Original + (Top Hat - Black Hat)</option>
+                    </select>
+    
+                </div>
+                <div>
+                    <label for="">Tamaño de la máscara</label>
+                    <select name="sizeMask" id="sizeMask">
+                        <option value="0" selected disabled>------ Seleccione la Operacion Morfológica ------</option>
+                        <option value="1">15x15</option>
+                        <option value="2">37x37</option>
+                        <option value="3">55x55</option>
+                    </select>
+                </div>
+
+                <button id="btApply">Aplicar</button>
+
+            </div>
+            <div>
+                <h3>Imagenes originales</h3>
+                <div>
+                    <div>
+                        <img src="{{ url_for('static', filename='images/axial_bone_c+.png') }}" alt="axial_bone_c+">                            
+                    </div>
+                    <div>
+                        <img src="{{ url_for('static', filename='images/axial_bone.png') }}" alt="axial_bone">
+                    </div>
+                    <div>
+                        <img src="{{ url_for('static', filename='images/axial_lung.png') }}" alt="axial_lung">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3>Imagenes Aplicadas las operaciones morfológicas</h3>
+                <div>
+                    <div>
+                        <h4>axial_bone_c</h4>
+                        <img id="axial_bone_c+" src="#" alt="axial_bone_c+"><img
+                            src="#" alt="axial_bone_c+">
+                    </div>
+                    <div>
+                        <h4>axial_bone</h4>
+                        <img id="axial_bone" src="#" alt="axial_bone">
+                    </div>
+                    <div>
+                        <h4>axial_lung</h4>
+                        <img id="axial_lung" src="#" alt="axial_lung">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+    <footer>
+        <p>Práctica Vision del computador P66</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/part2.js') }}"></script>
 </body>
+
 </html>
