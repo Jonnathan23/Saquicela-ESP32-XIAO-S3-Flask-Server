@@ -52,7 +52,7 @@ def picture_esp():
 # Fotos
 @main_bp.route('/axial-bone-c-result')
 def axial_bone_c_plus():
-    return renderImageAxialBoneC("axial_bone_c+.png")
+    return renderImageAxialBoneC("axial_bone_white.png")
 
 @main_bp.route('/axial-bone-result')
 def axial_bone_c():

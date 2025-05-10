@@ -23,67 +23,67 @@
         </nav>
     </header>
     <main class="main">
-        <section>
-            <h3>Operaciones Morfológicas</h3>
-            <p>Imagenes de lesiones una hernia de Lingula </p>
-        </section>
-        <div>
-            <div>
-                <div>
-                    <label for="morfologicsOperations">Operaion morfológica</label>
-                    <select name="morfologicsOperations" id="morfologicsOperations">
-                        <option value="0" selected disabled>------ Seleccione la Operacion Morfológica ------</option>
+        <div class="all--images">
+            <section class="section">
+                <h3 class="section--title">Operaciones Morfológicas</h3>
+                <p>Imagenes de lesiones una hernia de Lingula </p>
+            </section>
+            <form class="form" id="formOperations">
+                <div class="content--field">
+                    <label for="morfologicsOperations">Operación morfológica</label>
+                    <select class="select--morfologic" name="morfologicsOperations" id="morfologicsOperations">
+                        <option value="0" selected disabled>------ Seleccione ------</option>
                         <option value="1">Erosión</option>
                         <option value="2">Dilatación</option>
                         <option value="3">Top Hat</option>
                         <option value="4">Black Hat</option>
                         <option value="5"> Imagen Original + (Top Hat - Black Hat)</option>
                     </select>
-    
+
                 </div>
-                <div>
+                <div class="content--field">
                     <label for="">Tamaño de la máscara</label>
-                    <select name="sizeMask" id="sizeMask">
-                        <option value="0" selected disabled>------ Seleccione la Operacion Morfológica ------</option>
+                    <select class="select--morfologic" name="sizeMask" id="sizeMask">
+                        <option value="0" selected disabled>------ Seleccione ------</option>
                         <option value="1">15x15</option>
                         <option value="2">37x37</option>
                         <option value="3">55x55</option>
                     </select>
                 </div>
-
-                <button id="btApply">Aplicar</button>
-
-            </div>
-            <div>
-                <h3>Imagenes originales</h3>
-                <div>
-                    <div>
-                        <img src="{{ url_for('static', filename='images/axial_bone_c+.png') }}" alt="axial_bone_c+">                            
+                <div class="content--button">
+                    <button class="button--submit" type="submit" id="btApply">Aplicar</button>
+                </div>
+            </form>
+            <div class="section--original--images">
+                <h3 class="original--images--title">Imagenes originales</h3>
+                <div class="content--all--original--images">
+                    <div class="container--original--image">
+                        <img src="{{ url_for('static', filename='images/axial_bone_white.png') }}" alt="axial_bone_c+">
                     </div>
-                    <div>
-                        <img src="{{ url_for('static', filename='images/axial_bone.png') }}" alt="axial_bone">
-                    </div>
-                    <div>
+                    <div class="container--original--image">
                         <img src="{{ url_for('static', filename='images/axial_lung.png') }}" alt="axial_lung">
                     </div>
+                    <div class="container--original--image">
+                        <img src="{{ url_for('static', filename='images/axial_bone.png') }}" alt="axial_bone">
+                    </div>
+
                 </div>
             </div>
 
-            <div>
-                <h3>Imagenes Aplicadas las operaciones morfológicas</h3>
-                <div>
-                    <div>
+            <div class="section--original--images">
+                <h3 class="original--images--title">Imagenes Aplicadas las operaciones morfológicas</h3>
+                <div class="content--all--original--images">
+                    <div class="container--original--image">
                         <h4>axial_bone_c</h4>
-                        <img id="axial_bone_c+" src="#" alt="axial_bone_c+"><img
-                            src="#" alt="axial_bone_c+">
+                        <img id="axial_bone_c+" src="#" alt="axial_bone_c+">
                     </div>
-                    <div>
-                        <h4>axial_bone</h4>
-                        <img id="axial_bone" src="#" alt="axial_bone">
-                    </div>
-                    <div>
+                    <div class="container--original--image">
                         <h4>axial_lung</h4>
                         <img id="axial_lung" src="#" alt="axial_lung">
+                    </div>
+                    <div class="container--original--image">
+                        <h4>axial_bone</h4>
+                        <img id="axial_bone" src="#" alt="axial_bone">
                     </div>
                 </div>
             </div>

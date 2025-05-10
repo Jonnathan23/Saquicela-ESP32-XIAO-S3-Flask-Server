@@ -22,7 +22,8 @@ const morfologicsOperations = {
 const cbMorfologicsOperations = document.getElementById('morfologicsOperations');
 const cbTypeSizeMorfologicalSizeKermels = document.getElementById('sizeMask');
 
-// Buttons
+// Formulario
+const formMorfologics = document.getElementById('formOperations')
 const btApply = document.getElementById('btApply');
 
 // Images
@@ -30,11 +31,13 @@ const imageAxialBoneC = document.getElementById('axial_bone_c+');
 const imageAxialBone = document.getElementById('axial_bone');
 const imageAxialBoneLung = document.getElementById('axial_lung');
 
+
 //* Events Listeners
 
-btApply.addEventListener('click', () => applyMorfologicalOperation());
+formMorfologics.addEventListener('submit', (e) => applyMorfologicalOperation(e));
 
-const applyMorfologicalOperation = () => {
+const applyMorfologicalOperation = (e) => {
+    e.preventDefault();
     const operation = cbMorfologicsOperations.value;
     const sizeMask = cbTypeSizeMorfologicalSizeKermels.value;
 
